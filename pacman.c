@@ -3,14 +3,25 @@
 #include<locale.h>
 #include"pacman.h" 
 
-char** mapa;
-int linhas;
-int colunas;
+MAPA m;
 
 int main(void)
-{
+{	
+	char jogada;
+	
 	leMapa();
-	mostraMapa();
+	
+	do
+	{
+		mostraMapa();
+		printf("- Digite a sua jogada: \n");
+		scanf(" %c",&jogada);
+		
+		movimento(jogada);
+	}
+	
+	while(!perdeu());
+	
 	limpaMemoria();
 	
 	printf("\n\n\n");
@@ -30,17 +41,17 @@ void leMapa ( void )
 		exit(1);
 	}
 	
-	fscanf(arquivo,"%d %d",&linhas,&colunas);
+	fscanf(arquivo,"%d %d",&(m.linha),&(m.coluna));
 	
-	mapa = malloc( sizeof(char*) * linhas );
-	for ( i = 0; i < linhas; i++ )
+	m.matriz = malloc( sizeof(char*) * m.linha );
+	for ( i = 0; i < m.linha; i++ )
 	{
-		mapa[i] = malloc ( sizeof(char) * (colunas+1) );
+		m.matriz[i] = malloc ( sizeof(char) * (m.coluna+1) );
 	}
 	
-	for ( i = 0; i < linhas; i++ )
+	for ( i = 0; i < m.linha; i++ )
 	{
-		fscanf(arquivo,"%s",mapa[i]);
+		fscanf(arquivo,"%s",m.matriz[i]);
 	}
 }
 
@@ -48,18 +59,66 @@ void mostraMapa ( void )
 {
 	int i;
 	
-	for ( i = 0; i < linhas; i++ )
+	for ( i = 0; i < m.linha; i++ )
 	{
-		printf("\n%s",mapa[i]);
+		printf("\n%s",m.matriz[i]);
 	}
 }
 
 void limpaMemoria( void )
 {
 	int i;
-	for ( i = 0; i < linhas; i++ )
+	for ( i = 0; i < m.linha; i++ )
 	{
-		free(mapa[i]);
+		free(m.matriz[i]);
 	}
-	free(mapa);
-} 
+	free(m.matriz);
+}
+
+int perdeu ( void )
+{
+	return 0;
+}
+
+void movimento( char direcao )
+{
+	int x,y;
+	int i,j;
+	
+	for ( i = 0; i < m.linha; i++ )
+	{
+		for ( j = 0; j < m.coluna; j++ )
+		{
+			if ( m.matriz[i][j] == '@' )
+			{
+				x = i;
+				y = j;
+			}
+		}
+	}
+	
+	switch ( direcao )
+	{	
+		case 'A':
+		case 'a':
+			m.matriz[x][y - 1] = '@';
+			break;
+		
+		case 'D':
+        case 'd':
+   			m.matriz[x][y + 1] = '@';
+   			break;
+   		
+   		case 'W':
+   		case 'w':
+   			m.matriz[x-1][y] = '@';
+   			break;
+   		
+   		case 'S':
+   		case 's':
+   			m.matriz[x+1][y] = '@';
+   			break;
+	}
+	
+	m.matriz[x][y] = '.';
+}
