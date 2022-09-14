@@ -9,11 +9,11 @@ int main(void)
 {	
 	char jogada;
 	
-	leMapa();
+	leMapa(&m);
 	
 	do
 	{
-		mostraMapa();
+		mostraMapa(&m);
 		printf("- Digite a sua jogada: \n");
 		scanf(" %c",&jogada);
 		
@@ -22,7 +22,7 @@ int main(void)
 	
 	while(!perdeu());
 	
-	limpaMemoria();
+	limpaMemoria(&m);
 	
 	printf("\n\n\n");
 	system("pause");
@@ -30,7 +30,7 @@ int main(void)
 	return 0;
 }
 
-void leMapa ( void )
+void leMapa ( MAPA *m )
 {
 	FILE *arquivo;
 	int i;
@@ -41,38 +41,38 @@ void leMapa ( void )
 		exit(1);
 	}
 	
-	fscanf(arquivo,"%d %d",&(m.linha),&(m.coluna));
+	fscanf(arquivo,"%d %d",&(m->linha),&(m->coluna));
 	
-	m.matriz = malloc( sizeof(char*) * m.linha );
-	for ( i = 0; i < m.linha; i++ )
+	m->matriz = malloc( sizeof(char*) * m->linha );
+	for ( i = 0; i < m->linha; i++ )
 	{
-		m.matriz[i] = malloc ( sizeof(char) * (m.coluna+1) );
+		m->matriz[i] = malloc ( sizeof(char) * (m->coluna+1) );
 	}
 	
-	for ( i = 0; i < m.linha; i++ )
+	for ( i = 0; i < m->linha; i++ )
 	{
-		fscanf(arquivo,"%s",m.matriz[i]);
+		fscanf(arquivo,"%s",m->matriz[i]);
 	}
 }
 
-void mostraMapa ( void )
+void mostraMapa ( MAPA *m )
 {
 	int i;
 	
-	for ( i = 0; i < m.linha; i++ )
+	for ( i = 0; i < m->linha; i++ )
 	{
-		printf("\n%s",m.matriz[i]);
+		printf("\n%s",m->matriz[i]);
 	}
 }
 
-void limpaMemoria( void )
+void limpaMemoria( MAPA *m )
 {
 	int i;
-	for ( i = 0; i < m.linha; i++ )
+	for ( i = 0; i < m->linha; i++ )
 	{
-		free(m.matriz[i]);
+		free(m->matriz[i]);
 	}
-	free(m.matriz);
+	free(m->matriz);
 }
 
 int perdeu ( void )
