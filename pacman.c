@@ -1,7 +1,8 @@
 #include<stdio.h> 
 #include<stdlib.h> 
 #include<locale.h>
-#include"pacman.h" 
+#include<ctype.h>
+#include"pacman.h"
 
 MAPA m;
 
@@ -17,7 +18,7 @@ int main(void)
 		printf("- Digite a sua jogada: \n");
 		scanf(" %c",&jogada);
 		
-		movimento(jogada);
+		movimento(jogada,&m);
 	}
 	
 	while(!perdeu());
@@ -80,16 +81,26 @@ int perdeu ( void )
 	return 0;
 }
 
-void movimento( char direcao )
+void movimento( char direcao, MAPA *m )
 {
 	int x,y;
 	int i,j;
 	
-	for ( i = 0; i < m.linha; i++ )
+	if ( isupper(direcao) )
 	{
-		for ( j = 0; j < m.coluna; j++ )
+		direcao = tolower(direcao);
+	}
+	
+	if ( direcao != ESQUERDA && direcao != DESCE && direcao != SOBE && direcao != DIREITA )
+	{
+		return;
+	}
+	
+	for ( i = 0; i < m->linha; i++ )
+	{
+		for ( j = 0; j < m->coluna; j++ )
 		{
-			if ( m.matriz[i][j] == '@' )
+			if ( m->matriz[i][j] == PACMAN )
 			{
 				x = i;
 				y = j;
@@ -99,26 +110,46 @@ void movimento( char direcao )
 	
 	switch ( direcao )
 	{	
-		case 'A':
-		case 'a':
-			m.matriz[x][y - 1] = '@';
+		case ESQUERDA:
+			
+			if ( m->matriz[x][y-1] != VAZIO )
+			{
+				return;
+			}
+			
+			m->matriz[x][y - 1] = PACMAN;
 			break;
 		
-		case 'D':
-        case 'd':
-   			m.matriz[x][y + 1] = '@';
+        case DIREITA:
+        	
+        	if ( m->matriz[x][y+1] != VAZIO )
+			{
+				return;
+			}
+        	
+   			m->matriz[x][y + 1] = PACMAN;
    			break;
    		
-   		case 'W':
-   		case 'w':
-   			m.matriz[x-1][y] = '@';
+   		case SOBE:
+   			
+   			if ( m->matriz[x-1][y] != VAZIO )
+			{
+				return;
+			}
+			   
+   			m->matriz[x-1][y] = PACMAN;
    			break;
    		
-   		case 'S':
-   		case 's':
-   			m.matriz[x+1][y] = '@';
+   		case DESCE:
+   			
+   			if ( m->matriz[x+1][y] != VAZIO )
+			{
+				return;
+			}
+   			
+   			m->matriz[x+1][y] = PACMAN;
    			break;
 	}
 	
-	m.matriz[x][y] = '.';
+	m->matriz[x][y] = VAZIO;
 }
