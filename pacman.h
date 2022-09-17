@@ -6,6 +6,7 @@
 #define PAREDE_H '-'
 #define PAREDE_V '|'
 #define VAZIO '.'
+#define FANTASMA '@'
 
 typedef struct
 {
@@ -17,6 +18,11 @@ typedef struct
 void limpaMemoria ( MAPA *m );
 void leMapa ( MAPA *m );
 void mostraMapa ( MAPA *m );
-int perdeu (void);
+int perdeu ( MAPA *m );
 void movimento ( char direcao, MAPA *m );
+void achaFantasma ( void );
+void moveFantasma ( MAPA *m, int xF, int yF );
+
+
+
 

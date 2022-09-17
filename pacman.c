@@ -2,10 +2,12 @@
 #include<stdlib.h> 
 #include<locale.h>
 #include<ctype.h>
+#include<time.h>
+#include<string.h>
 #include"pacman.h"
 
 MAPA m;
-
+	
 int main(void)
 {	
 	char jogada;
@@ -17,11 +19,13 @@ int main(void)
 		mostraMapa(&m);
 		printf("- Digite a sua jogada: \n");
 		scanf(" %c",&jogada);
-		
 		movimento(jogada,&m);
+		achaFantasma();
+		
+		system("cls");
 	}
 	
-	while(!perdeu());
+	while(!perdeu(&m));
 	
 	limpaMemoria(&m);
 	
@@ -76,9 +80,30 @@ void limpaMemoria( MAPA *m )
 	free(m->matriz);
 }
 
-int perdeu ( void )
-{
-	return 0;
+int perdeu ( MAPA *m )
+{	
+	int i,j;
+	int naoPerdeu = 0;
+	
+	for ( i = 0; i < m->linha; i++ )
+	{
+		for ( j = 0; j < m->coluna; j++ )
+		{
+			if ( m->matriz[i][j] == PACMAN )
+			{
+				naoPerdeu = 1;
+			}
+		}
+	}
+	
+	if ( naoPerdeu )
+	{
+		return 0;
+	}
+	else
+	{
+		return 1;
+	}
 }
 
 void movimento( char direcao, MAPA *m )
@@ -153,3 +178,25 @@ void movimento( char direcao, MAPA *m )
 	
 	m->matriz[x][y] = VAZIO;
 }
+
+void achaFantasma ( void )
+{
+	int i,j;
+	
+	for ( i = 0; i < m.linha; i++ )
+	{
+		for ( j = 0; j < m.coluna; j++ )
+		{
+			if ( m.matriz[i][j] == FANTASMA )
+			{
+				moveFantasma(&m,i,j);
+			}
+		}
+	}
+}
+
+void moveFantasma(MAPA *m, int xF, int yF)
+{
+	return;
+}
+
