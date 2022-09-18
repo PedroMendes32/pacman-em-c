@@ -20,8 +20,9 @@ void leMapa ( MAPA *m );
 void mostraMapa ( MAPA *m );
 int perdeu ( MAPA *m );
 void movimento ( char direcao, MAPA *m );
-void achaFantasma ( void );
-void moveFantasma ( MAPA *m, int xF, int yF );
+void fantasmas( MAPA *m );
+void moveFantasmas( MAPA *destino, int x, int y );
+
 
 
 

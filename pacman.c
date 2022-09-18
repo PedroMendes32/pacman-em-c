@@ -1,3 +1,4 @@
+
 #include<stdio.h> 
 #include<stdlib.h> 
 #include<locale.h>
@@ -18,11 +19,10 @@ int main(void)
 	{
 		mostraMapa(&m);
 		printf("- Digite a sua jogada: \n");
+		fflush(stdin);
 		scanf(" %c",&jogada);
 		movimento(jogada,&m);
-		achaFantasma();
-		
-		system("cls");
+		fantasmas(&m);
 	}
 	
 	while(!perdeu(&m));
@@ -42,7 +42,7 @@ void leMapa ( MAPA *m )
 	
 	if (( arquivo = fopen("mapa.txt","r") ) == NULL )
 	{
-		printf("\n Não foi possível ler o mapa!");
+		printf("\n Nï¿½o foi possï¿½vel ler o mapa!");
 		exit(1);
 	}
 	
@@ -82,28 +82,7 @@ void limpaMemoria( MAPA *m )
 
 int perdeu ( MAPA *m )
 {	
-	int i,j;
-	int naoPerdeu = 0;
-	
-	for ( i = 0; i < m->linha; i++ )
-	{
-		for ( j = 0; j < m->coluna; j++ )
-		{
-			if ( m->matriz[i][j] == PACMAN )
-			{
-				naoPerdeu = 1;
-			}
-		}
-	}
-	
-	if ( naoPerdeu )
-	{
-		return 0;
-	}
-	else
-	{
-		return 1;
-	}
+	return 0;
 }
 
 void movimento( char direcao, MAPA *m )
@@ -177,26 +156,92 @@ void movimento( char direcao, MAPA *m )
 	}
 	
 	m->matriz[x][y] = VAZIO;
+	
+	
 }
 
-void achaFantasma ( void )
+void fantasmas( MAPA *m )
 {
+	char matriz[m->linha][m->coluna];
 	int i,j;
 	
-	for ( i = 0; i < m.linha; i++ )
+	for ( i = 0; i < m->linha; i++ )
 	{
-		for ( j = 0; j < m.coluna; j++ )
+		for ( j = 0; j < m->coluna; j++ )
 		{
-			if ( m.matriz[i][j] == FANTASMA )
+			matriz[i][j] = m->matriz[i][j];
+		}
+	}
+
+	for ( i = 0; i < m->linha; i++ )
+	{
+		for ( j = 0; j < m->coluna; j++ )
+		{
+			if ( matriz[i][j] == FANTASMA )
 			{
-				moveFantasma(&m,i,j);
+				moveFantasmas(m,i,j);
 			}
 		}
 	}
 }
 
-void moveFantasma(MAPA *m, int xF, int yF)
+void moveFantasmas ( MAPA *destino, int x, int y )
 {
-	return;
+	srand(time(NULL));
+
+	int podeMover = 0;
+	int jogada;
+
+	while ( !podeMover )
+	{
+		jogada = rand() % 4;
+
+		switch ( jogada )
+		{
+			case 0:
+				
+				if ( destino->matriz[x][y+1] != VAZIO && destino->matriz[x][y+1] != PACMAN )
+				{
+					break;
+				}
+				destino->matriz[x][y+1] = FANTASMA;
+				podeMover = 1;
+				break;
+
+			case 1:
+
+				if ( destino->matriz[x][y-1] != VAZIO && destino->matriz[x][y-1] != PACMAN )
+				{
+					break;
+				}
+				destino->matriz[x][y-1] = FANTASMA;
+				podeMover = 1;
+				break;
+			
+			case 2:
+
+				if ( destino->matriz[x+1][y] != VAZIO && destino->matriz[x+1][y] != PACMAN )
+				{
+					break;
+				}
+				destino->matriz[x+1][y] = FANTASMA;
+				podeMover = 1;
+				break;
+
+			case 3:
+
+				if ( destino->matriz[x-1][y] != VAZIO && destino->matriz[x-1][y] != PACMAN )
+				{
+					break;
+				}
+				destino->matriz[x-1][y] = FANTASMA;
+				podeMover = 1;
+				break;
+		}
+	}
+
+	destino->matriz[x][y] = VAZIO;
 }
+
+
 
