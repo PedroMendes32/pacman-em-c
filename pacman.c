@@ -23,6 +23,8 @@ int main(void)
 		scanf(" %c",&jogada);
 		movimento(jogada,&m);
 		fantasmas(&m);
+		
+		system("cls");
 	}
 	
 	while(!perdeu(&m));
@@ -82,7 +84,29 @@ void limpaMemoria( MAPA *m )
 
 int perdeu ( MAPA *m )
 {	
-	return 0;
+	int perdeu = 1;
+
+	int i,j;
+
+	for ( i = 0; i < m->linha; i++ )
+	{
+		for ( j = 0; j < m->coluna; j++ )
+		{
+			if ( m->matriz[i][j] == PACMAN )
+			{
+				perdeu = 0;
+			}
+		}
+	}
+
+	if ( perdeu )
+	{
+		return 1;
+	}
+	else
+	{
+		return 0;
+	}
 }
 
 void movimento( char direcao, MAPA *m )
