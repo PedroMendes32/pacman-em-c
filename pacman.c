@@ -8,19 +8,30 @@
 #include"pacman.h"
 
 MAPA m;
+int temPocao = 0;
 	
 int main(void)
 {	
+	
+	setlocale(LC_ALL,"Portuguese");
+	
 	char jogada;
 	
 	leMapa(&m);
 	
 	do
-	{
+	{	
+		printf("\n TEM POÇÃO: %s", temPocao ? "SIM":"NÃO");
 		mostraMapa(&m);
 		printf("- Digite a sua jogada: \n");
 		fflush(stdin);
 		scanf(" %c",&jogada);
+		
+		if ( jogada == BOMBA && temPocao )
+		{
+			bomba(&m);
+		}
+		
 		movimento(jogada,&m);
 		fantasmas(&m);
 		
@@ -28,6 +39,10 @@ int main(void)
 	}
 	
 	while(!perdeu(&m));
+	
+	mostraMapa(&m);
+	printf("\n\n Ops!, você Perdeu!");
+	
 	
 	limpaMemoria(&m);
 	
@@ -119,7 +134,7 @@ void movimento( char direcao, MAPA *m )
 		direcao = tolower(direcao);
 	}
 	
-	if ( direcao != ESQUERDA && direcao != DESCE && direcao != SOBE && direcao != DIREITA )
+	if ( direcao != ESQUERDA && direcao != DESCE && direcao != SOBE && direcao != DIREITA)
 	{
 		return;
 	}
@@ -140,29 +155,39 @@ void movimento( char direcao, MAPA *m )
 	{	
 		case ESQUERDA:
 			
-			if ( m->matriz[x][y-1] != VAZIO )
+			if ( m->matriz[x][y-1] != VAZIO && m->matriz[x][y-1] != POCAO )
 			{
 				return;
 			}
-			
+			if ( m->matriz[x][y-1] == POCAO )
+			{
+				temPocao = 1;
+			}
 			m->matriz[x][y - 1] = PACMAN;
 			break;
 		
         case DIREITA:
         	
-        	if ( m->matriz[x][y+1] != VAZIO )
+        	if ( m->matriz[x][y+1] != VAZIO && m->matriz[x][y+1] != POCAO )
 			{
 				return;
 			}
-        	
+        	if ( m->matriz[x][y+1] == POCAO )
+			{
+				temPocao = 1;
+			}
    			m->matriz[x][y + 1] = PACMAN;
    			break;
    		
    		case SOBE:
    			
-   			if ( m->matriz[x-1][y] != VAZIO )
+   			if ( m->matriz[x-1][y] != VAZIO && m->matriz[x-1][y] != POCAO )
 			{
 				return;
+			}
+			if ( m->matriz[x-1][y] == POCAO )
+			{
+				temPocao = 1;
 			}
 			   
    			m->matriz[x-1][y] = PACMAN;
@@ -170,11 +195,14 @@ void movimento( char direcao, MAPA *m )
    		
    		case DESCE:
    			
-   			if ( m->matriz[x+1][y] != VAZIO )
+   			if ( m->matriz[x+1][y] != VAZIO && m->matriz[x+1][y] != POCAO )
 			{
 				return;
 			}
-   			
+			if ( m->matriz[x+1][y] == POCAO )
+			{
+				temPocao = 1;
+			}
    			m->matriz[x+1][y] = PACMAN;
    			break;
 	}
@@ -265,6 +293,26 @@ void moveFantasmas ( MAPA *destino, int x, int y )
 	}
 
 	destino->matriz[x][y] = VAZIO;
+}
+
+void bomba ( MAPA *m )
+{	
+	temPocao = 0;
+	int i,j;
+	int x,y;
+	
+	for ( i = 0; i < m->linha; i++ )
+	{
+		for ( j = 0; j < m->coluna; j++ )
+		{
+			if ( m->matriz[i][j] == PACMAN )
+			{
+				x = i;
+				y = j;
+			}
+		}
+	}
+	
 }
 
 
