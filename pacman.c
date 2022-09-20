@@ -313,6 +313,37 @@ void bomba ( MAPA *m )
 		}
 	}
 	
+	for ( i = 1; i <= 3; i++ )
+	{
+		if ( m->matriz[x][y+i] != FANTASMA && m->matriz[x][y+i] != VAZIO )
+		{
+			break;
+		}
+		else
+		{
+			m->matriz[x][y+i] = VAZIO;
+		}
+		if ( m->matriz[x][y-i] != FANTASMA && m->matriz[x][y-i] != VAZIO )
+		{
+			break;
+		}
+		else
+		{
+			m->matriz[x][y-i] = VAZIO;
+		}
+		if ( m->matriz[x+i][y] != FANTASMA && m->matriz[x+i][y] != VAZIO )
+		{
+			break;
+		}
+		else
+		{
+			m->matriz[x+i][y] = VAZIO;
+		}
+		if ( m->matriz[x-i][y] != FANTASMA && m->matriz[x-i][y] != VAZIO )
+		{
+			break;
+		}
+	}
 }
 
 
