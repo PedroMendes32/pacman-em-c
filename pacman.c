@@ -21,7 +21,7 @@ int main(void)
 	
 	do
 	{	
-		printf("\n TEM POÇÃO: %s", temPocao ? "SIM":"NÃO");
+		printf("\n TEM POÇÃO: %s\n\n", temPocao ? "SIM":"NÃO");
 		mostraMapa(&m);
 		printf("- Digite a sua jogada: \n");
 		fflush(stdin);
@@ -41,7 +41,7 @@ int main(void)
 	while(!perdeu(&m));
 	
 	mostraMapa(&m);
-	printf("\n\n Ops!, você Perdeu!");
+	printf("\n\n Ops!, Você Perdeu!");
 	
 	
 	limpaMemoria(&m);
@@ -77,15 +77,6 @@ void leMapa ( MAPA *m )
 	}
 }
 
-void mostraMapa ( MAPA *m )
-{
-	int i;
-	
-	for ( i = 0; i < m->linha; i++ )
-	{
-		printf("\n%s",m->matriz[i]);
-	}
-}
 
 void limpaMemoria( MAPA *m )
 {
@@ -315,36 +306,139 @@ void bomba ( MAPA *m )
 	
 	for ( i = 1; i <= 3; i++ )
 	{
-		if ( m->matriz[x][y+i] != FANTASMA && m->matriz[x][y+i] != VAZIO )
-		{
-			break;
-		}
-		else
+		if ( m->matriz[x][y+i] == VAZIO || m->matriz[x][y+i] == FANTASMA )
 		{
 			m->matriz[x][y+i] = VAZIO;
 		}
-		if ( m->matriz[x][y-i] != FANTASMA && m->matriz[x][y-i] != VAZIO )
+		else
 		{
 			break;
 		}
-		else
+	}
+	
+	for ( i = 1; i <= 3; i++ )
+	{
+		if ( m->matriz[x][y-i] == VAZIO || m->matriz[x][y-i] == FANTASMA )
 		{
 			m->matriz[x][y-i] = VAZIO;
 		}
-		if ( m->matriz[x+i][y] != FANTASMA && m->matriz[x+i][y] != VAZIO )
+		else
 		{
 			break;
 		}
-		else
+	}
+	
+	for ( i = 1; i <= 3; i++ )
+	{
+		if ( m->matriz[x+i][y] == VAZIO || m->matriz[x+i][y] == FANTASMA )
 		{
 			m->matriz[x+i][y] = VAZIO;
 		}
-		if ( m->matriz[x-i][y] != FANTASMA && m->matriz[x-i][y] != VAZIO )
+		else
+		{
+			break;
+		}
+	}
+	
+	for ( i = 1; i <= 3; i++ )
+	{
+		if ( m->matriz[x-i][y] == VAZIO || m->matriz[x-i][y] == FANTASMA )
+		{
+			m->matriz[x-i][y] = VAZIO;
+		}
+		else
 		{
 			break;
 		}
 	}
 }
+
+char desenhoFantasma[4][7] = {
+    {" .-.  " },
+    {"| OO| " },
+    {"|   | " },
+    {"'^^^' " }
+};
+
+char desenhoParede[4][7] = {
+    {"......" },
+    {"......" },
+    {"......" },
+    {"......" }
+};
+
+char desenhoPacman[4][7] = {
+    {" .--. "  },
+    {"/ _.-'"  },
+    {"\\  '-." },
+    {" '--' "  }
+};
+
+char desenhoPocao[4][7] = {
+    {"      "},
+    {" .-.  "},
+    {" '-'  "},
+    {"      "}
+};
+
+char desenhoVazio[4][7] = {
+    {"      "},
+    {"      "},
+    {"      "},
+    {"      "}
+};
+
+void imprimeparte ( char desenho[4][7], int parte )
+{
+	printf("%s",desenho[parte]);
+}
+
+void mostraMapa ( MAPA *m )
+{
+	int i,j;
+	int parte;
+	
+	for ( i = 0; i < m->linha; i++ )
+	{
+		for ( parte = 0; parte < 4; parte++ )
+		{
+			for ( j = 0; j < m->coluna; j++ )
+			{
+				switch ( m->matriz[i][j] )
+				{
+					case FANTASMA:
+						imprimeparte(desenhoFantasma,parte);
+						break;
+					
+					case PACMAN:
+						imprimeparte(desenhoPacman,parte);
+						break;
+					
+					case VAZIO:
+						imprimeparte(desenhoVazio,parte);
+						break;
+					
+					case POCAO:
+						imprimeparte(desenhoPocao,parte);
+						break;
+					
+					case PAREDE_H:
+					case PAREDE_V:
+						imprimeparte(desenhoParede,parte);
+						break;
+				}
+			}
+			printf("\n");
+		}
+	}
+}
+
+
+
+
+
+
+
 
 
 
