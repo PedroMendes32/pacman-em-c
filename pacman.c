@@ -21,28 +21,27 @@ int main(void)
 	
 	do
 	{	
-		printf("\n TEM POÇÃO: %s\n\n", temPocao ? "SIM":"NÃO");
+		
 		mostraMapa(&m);
+		mostraStatus();
 		printf("- Digite a sua jogada: \n");
 		fflush(stdin);
 		scanf(" %c",&jogada);
 		
-		if ( jogada == BOMBA && temPocao )
+		if (( jogada == BOMBA && temPocao )|| (jogada == BOMBA2 && temPocao ))
 		{
 			bomba(&m);
 		}
-		
 		movimento(jogada,&m);
 		fantasmas(&m);
+		geraBomba(&m);
 		
 		system("cls");
 	}
 	
-	while(!perdeu(&m));
+	while(!resultado(&m));
 	
 	mostraMapa(&m);
-	printf("\n\n Ops!, Você Perdeu!");
-	
 	
 	limpaMemoria(&m);
 	
@@ -59,7 +58,7 @@ void leMapa ( MAPA *m )
 	
 	if (( arquivo = fopen("mapa.txt","r") ) == NULL )
 	{
-		printf("\n Nï¿½o foi possï¿½vel ler o mapa!");
+		printf("\n Não foi possível ler o mapa!");
 		exit(1);
 	}
 	
@@ -88,9 +87,10 @@ void limpaMemoria( MAPA *m )
 	free(m->matriz);
 }
 
-int perdeu ( MAPA *m )
+int resultado ( MAPA *m )
 {	
 	int perdeu = 1;
+	int temFantasma = 0;
 
 	int i,j;
 
@@ -106,13 +106,30 @@ int perdeu ( MAPA *m )
 	}
 
 	if ( perdeu )
-	{
+	{	
+		exibeDerrota();
 		return 1;
 	}
-	else
+
+
+	for ( i = 0; i < m->linha; i++ )
 	{
-		return 0;
+		for ( j = 0; j < m->coluna; j++ )
+		{
+			if ( m->matriz[i][j] == FANTASMA )
+			{
+				temFantasma = 1;
+			}
+		}
 	}
+	
+	if ( temFantasma == 0 )
+	{	
+		exibeVitoria();
+		return 1;
+	}
+	
+	return 0;
 }
 
 void movimento( char direcao, MAPA *m )
@@ -431,6 +448,91 @@ void mostraMapa ( MAPA *m )
 			printf("\n");
 		}
 	}
+}
+
+void mostraStatus ( void )
+{
+	printf("\t\t\t TEM BOMBA: %s\n\n", temPocao ? "SIM":"NÃO");
+}
+
+void geraBomba(MAPA *m)
+{
+	int i,j;
+	int existe = 0;
+	int podeCriar = 0;
+	int x,y;
+	
+	for ( i = 0; i < m->linha; i++ )
+	{
+		for ( j = 0; j < m->coluna; j++ )
+		{
+			if ( m->matriz[i][j] == POCAO )
+			{
+				existe = 1;
+				return;
+			}
+		}
+	}
+	
+	if ( !existe )
+	{
+		while ( !podeCriar )
+		{
+			x = rand() % m->linha;
+			y = rand() % m->coluna;
+			
+			if ( m->matriz[x][y] == VAZIO )
+			{
+				m->matriz[x][y] = POCAO;
+				podeCriar = 1;
+			}
+		}
+	}
+}
+
+void exibeVitoria(void)
+{	
+	
+	printf("       ___________      \n");
+	printf("      '._==_==_=_.'     \n");
+	printf("      .-\\:      /-.    \n");
+	printf("     | (|:.     |) |    \n");
+	printf("      '-|:.     |-'     \n");
+	printf("        \\::.    /      \n");
+	printf("         '::. .'        \n");
+	printf("           ) (          \n");
+	printf("         _.' '._        \n");
+	printf("        '-------'       \n\n");
+	printf("\n\n\n");
+	printf("-------- VOCÊ VENCEU! --------");
+	printf("\n\n\n");
+	
+	
+}
+
+void exibeDerrota (void)
+{
+	
+	printf("    _______________         \n");
+	printf("   /               \\       \n"); 
+	printf("  /                 \\      \n");
+	printf("//                   \\/\\  \n");
+	printf("\\|   XXXX     XXXX   | /   \n");
+	printf(" |   XXXX     XXXX   |/     \n");
+	printf(" |   XXX       XXX   |      \n");
+	printf(" |                   |      \n");
+	printf(" \\__      XXX      __/     \n");
+	printf("   |\\     XXX     /|       \n");
+	printf("   | |           | |        \n");
+	printf("   | I I I I I I I |        \n");
+	printf("   |  I I I I I I  |        \n");
+	printf("   \\_             _/       \n");
+	printf("     \\_         _/         \n");
+	printf("       \\_______/           \n");
+	printf("\n\n\n");
+	printf("-------- VOCÊ PERDEU! --------");
+	printf("\n\n\n");
+	
 }
 
 

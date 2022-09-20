@@ -10,6 +10,7 @@
 #define FANTASMA '@'
 #define POCAO 'P'
 #define BOMBA 'b'
+#define BOMBA2 'B'
 
 typedef struct
 {
@@ -20,13 +21,17 @@ typedef struct
 
 void limpaMemoria ( MAPA *m );
 void leMapa ( MAPA *m );
-int perdeu ( MAPA *m );
+int resultado ( MAPA *m );
 void movimento ( char direcao, MAPA *m );
 void fantasmas( MAPA *m );
 void moveFantasmas( MAPA *destino, int x, int y );
 void bomba ( MAPA *m );
 void mostraMapa ( MAPA *m );
 void imprimeparte ( char desenho[4][7], int parte );
+void mostraStatus ( void );
+void geraBomba ( MAPA *m );
+void exibeVitoria (void);
+void exibeDerrota (void);
 
 
 
